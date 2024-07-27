@@ -23,7 +23,7 @@ class User extends Model
 
     function get_list_user($limit, $start, Array $search) {
         $q = '';
-        $limit = " limit $start , $limit";
+        // $limit = " limit $start , $limit";
 
         if ($search['search'] != '') {
             $q .= "AND u.username LIKE '%".$search['search']."%' ";
@@ -56,6 +56,8 @@ class User extends Model
                 WHERE u.deleted_at is null  
                     AND u.id = $id 
                 LIMIT 1";
+
+        
                 
         return $this->query($sql)->getRow();
     }
@@ -83,7 +85,7 @@ class User extends Model
                 "id" => $param['id'],
                 "username" => $param['username'],
                 "email" => $param['email'],
-                "name" => $param['id_employee'],
+                "name" => $param['name'],
                 "active" => $param['active']
             );
         } else {
