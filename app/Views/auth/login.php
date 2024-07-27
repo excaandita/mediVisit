@@ -14,11 +14,11 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
         <title>Sign in with illustration - Tabler - Premium and Open Source dashboard template with responsive and high quality UI.</title>
         <!-- CSS files -->
-        <link href="<?= base_url()?>/template/dist/css/tabler.min.css?1692870487" rel="stylesheet"/>
-        <link href="<?= base_url()?>/template/dist/css/tabler-flags.min.css?1692870487" rel="stylesheet"/>
-        <link href="<?= base_url()?>/template/dist/css/tabler-payments.min.css?1692870487" rel="stylesheet"/>
-        <link href="<?= base_url()?>/template/dist/css/tabler-vendors.min.css?1692870487" rel="stylesheet"/>
-        <link href="<?= base_url()?>/template/dist/css/demo.min.css?1692870487" rel="stylesheet"/>
+        <link href="<?= base_url('template/dist/css/tabler.min.css?1692870487')?>" rel="stylesheet"/>
+        <link href="<?= base_url('template/dist/css/tabler-flags.min.css?1692870487')?>" rel="stylesheet"/>
+        <link href="<?= base_url('template/dist/css/tabler-payments.min.css?1692870487')?>" rel="stylesheet"/>
+        <link href="<?= base_url('template/dist/css/tabler-vendors.min.css?1692870487')?>" rel="stylesheet"/>
+        <link href="<?= base_url('template/dist/css/demo.min.css?1692870487')?>" rel="stylesheet"/>
         <style>
         @import url('https://rsms.me/inter/inter.css');
         :root {
@@ -30,14 +30,14 @@
         </style>
     </head>
     <body  class=" d-flex flex-column">
-        <script src="<?= base_url()?>/template/dist/js/demo-theme.min.js?1692870487"></script>
+        <script src="<?= base_url('template/dist/js/demo-theme.min.js?1692870487')?>"></script>
         <div class="page page-center">
             <div class="container container-normal py-4">
                 <div class="row align-items-center g-4">
                     <div class="col-lg">
                         <div class="container-tight">
                             <div class="text-center mb-4">
-                                <a href="." class="navbar-brand navbar-brand-autodark"><img src="<?= base_url()?>/template/static/logo.svg" height="36" alt=""></a>
+                                <a href="." class="navbar-brand navbar-brand-autodark"><img src="<?= base_url()?>/template/static/logo.svg" height="70" alt=""></a>
                             </div>
                             <div class="card card-md">
                                 <div class="card-body">
@@ -83,7 +83,7 @@
         </div>
         <!-- Libs JS -->
         <!-- Tabler Core -->
-        <script src="<?=base_url()?>/template/dist/js/tabler.min.js?1692870487" defer></script>
-        <script src="<?=base_url()?>/template/dist/js/demo.min.js?1692870487" defer></script>
+        <script src="<?=base_url('template/dist/js/tabler.min.js?1692870487')?>" defer></script>
+        <script src="<?=base_url('template/dist/js/demo.min.js?1692870487')?>" defer></script>
     </body>
 </html>
