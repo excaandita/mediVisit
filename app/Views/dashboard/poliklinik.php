@@ -41,7 +41,8 @@
                 type: 'GET',
                 url: '<?= base_url() ?>/api/dashboard/listPoliklinik',
                 data: {
-                    id_poliklinik: 36,
+                    start_date: '2024-06-01',
+                    end_date: '2024-07-27',
                     page: page
                 },
                 dataType: 'json',

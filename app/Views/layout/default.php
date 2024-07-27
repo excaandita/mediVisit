@@ -14,11 +14,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>Dashboard - Tabler - Premium and Open Source dashboard template with responsive and high quality UI.</title>
     <!-- CSS files -->
-    <link href="<?= base_url()?>/template/dist/css/tabler.min.css?1692870487" rel="stylesheet"/>
-    <link href="<?= base_url()?>/template/dist/css/tabler-flags.min.css?1692870487" rel="stylesheet"/>
-    <link href="<?= base_url()?>/template/dist/css/tabler-payments.min.css?1692870487" rel="stylesheet"/>
-    <link href="<?= base_url()?>/template/dist/css/tabler-vendors.min.css?1692870487" rel="stylesheet"/>
-    <link href="<?= base_url()?>/template/dist/css/demo.min.css?1692870487" rel="stylesheet"/>
+    <link href="<?= base_url('template/dist/css/tabler.min.css?1692870487')?>" rel="stylesheet"/>
+    <link href="<?= base_url('template/dist/css/tabler-flags.min.css?1692870487')?>" rel="stylesheet"/>
+    <link href="<?= base_url('template/dist/css/tabler-payments.min.css?1692870487')?>" rel="stylesheet"/>
+    <link href="<?= base_url('template/dist/css/tabler-vendors.min.css?1692870487')?>" rel="stylesheet"/>
+    <link href="<?= base_url('template/dist/css/demo.min.css?1692870487')?>" rel="stylesheet"/>
 
     <link href="<?= base_url()?>/asset/css/select2.min.css" rel="stylesheet"/>
     <style>
@@ -122,15 +122,15 @@
 
     </div>
     <!-- Libs JS -->
-    <script src="<?= base_url()?>/asset/js/jquery-ui.js"></script>
+    <script src="<?= base_url('asset/js/jquery-ui.js')?>"></script>
 
-    <script src="<?= base_url()?>/template/dist/libs/apexcharts/dist/apexcharts.min.js?1692870487" defer></script>
-    <script src="<?= base_url()?>/template/dist/libs/jsvectormap/dist/js/jsvectormap.min.js?1692870487" defer></script>
-    <script src="<?= base_url()?>/template/dist/libs/jsvectormap/dist/maps/world.js?1692870487" defer></script>
-    <script src="<?= base_url()?>/template/dist/libs/jsvectormap/dist/maps/world-merc.js?1692870487" defer></script>
+    <script src="<?= base_url('template/dist/libs/apexcharts/dist/apexcharts.min.js?1692870487')?>" defer></script>
+    <script src="<?= base_url('template/dist/libs/jsvectormap/dist/js/jsvectormap.min.js?1692870487')?>" defer></script>
+    <script src="<?= base_url('template/dist/libs/jsvectormap/dist/maps/world.js?1692870487')?>" defer></script>
+    <script src="<?= base_url('template/dist/libs/jsvectormap/dist/maps/world-merc.js?1692870487')?>" defer></script>
     <!-- Tabler Core -->
-    <script src="<?= base_url()?>/template/dist/js/tabler.min.js?1692870487" defer></script>
-    <script src="<?= base_url()?>/template/dist/js/demo.min.js?1692870487" defer></script>
+    <script src="<?= base_url('template/dist/js/tabler.min.js?1692870487')?>/" defer></script>
+    <script src="<?= base_url('template/dist/js/demo.min.js?1692870487')?>" defer></script>
     
   </body>
 </html>
