@@ -37,7 +37,7 @@
                     <div class="col-lg">
                         <div class="container-tight">
                             <div class="text-center mb-4">
-                                <a href="." class="navbar-brand navbar-brand-autodark"><img src="<?= base_url()?>/template/static/logo.svg" height="70" alt=""></a>
+                                <a href="." class="navbar-brand navbar-brand-autodark"><img src="<?= base_url()?>/template/static/logo.svg" height="80" width="340" alt=""></a>
                             </div>
                             <div class="card card-md">
                                 <div class="card-body">
