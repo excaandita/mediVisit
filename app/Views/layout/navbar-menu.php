@@ -12,8 +12,8 @@ $menuItems = [
         'submenu' => [
             ['name' => 'Poliklinik', 'url' => '/dashboard/poliklinik'],
             ['name' => 'IGD', 'url' => '/dashboard/igd'],
-            ['name' => 'Rawat Inap', 'url' => 'dashboard/rawatInap'],
-            ['name' => 'Penunjang', 'url' => 'dashboard/penunjang'],
+            ['name' => 'Rawat Inap', 'url' => '/dashboard/rawatInap'],
+            ['name' => 'Penunjang', 'url' => '/dashboard/penunjang'],
         ],
     ],
     [
@@ -35,12 +35,11 @@ $currentURL = $_SERVER['REQUEST_URI'];
             <div class="container-xl">
                 <ul class="navbar-nav">
                     <?php foreach ($menuItems as $item): ?>
-                        <?php if (isset($item['submenu'])) { ?>
-                        <li class="nav-item dropdown <?php echo strpos($currentURL, $item['url']) === 0 ? 'active' : ''; ?>">
-                        <?php } else { ?>
-                            <li class="nav-item <?php echo strpos($currentURL, $item['url']) === 0 ? 'active' : ''; ?>">
-                        <?php }; ?>
-                            <a class="nav-link <?php echo isset($item['submenu']) ? 'dropdown-toggle' : ''; ?>" href="<?= $item['url']; ?>" <?php echo isset($item['submenu']) ? 'data-bs-toggle="dropdown"' : ''; ?>>
+                        <?php 
+                            $isActive = ($currentURL === $item['url']) || ($item['url'] !== '/' && strpos($currentURL, $item['url']) === 0);
+                        ?>
+                        <li class="nav-item <?= $isActive ? 'active' : ''; ?> <?= isset($item['submenu']) ? 'dropdown' : ''; ?>">
+                            <a class="nav-link <?= isset($item['submenu']) ? 'dropdown-toggle' : ''; ?>" href="<?= $item['url']; ?>" <?= isset($item['submenu']) ? 'data-bs-toggle="dropdown"' : ''; ?>>
                                 <span class="nav-link-icon d-md-none d-lg-inline-block">
                                     <?= $item['icon']; ?>
                                 </span>
@@ -52,7 +51,7 @@ $currentURL = $_SERVER['REQUEST_URI'];
                                 <ul class="dropdown-menu">
                                     <?php foreach ($item['submenu'] as $submenu): ?>
                                         <li>
-                                            <a class="dropdown-item <?php echo strpos($currentURL, $submenu['url']) === 0 ? 'active' : ''; ?>" href="<?= $submenu['url']; ?>">
+                                            <a class="dropdown-item <?= strpos($currentURL, $submenu['url']) === 0 ? 'active' : ''; ?>" href="<?= $submenu['url']; ?>">
                                                 <?= $submenu['name']; ?>
                                             </a>
                                         </li>

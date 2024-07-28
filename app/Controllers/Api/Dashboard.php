@@ -55,6 +55,38 @@ class Dashboard extends ResourceController
         }
     }
 
+    public function getDashboardWidget(): ResponseInterface {
+        $search = array(
+            'start_date'    => $this->request->getVar('start_date'),
+            'end_date'      => $this->request->getVar('end_date')
+        );
+
+        $api = $this->apiUrl.'/kunjungan_api/visit/dashboard_widget';
+    
+        $options = [
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
+            'query' => $search
+        ];
+    
+        try {
+            $response = $this->client->get($api, $options);
+            $body = $response->getBody();
+            $data = json_decode($body, true);
+    
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \RuntimeException('Error parsing JSON response: ' . json_last_error_msg());
+            }
+    
+            return $this->respond($data, 200);
+    
+        } catch (\Exception $e) {
+            log_message('error', $e->getMessage());
+            return $this->respond(['error' => 'An error occurred while fetching data from the API.'], 500);
+        }
+    }
+
     public function getListPoliklinik(): ResponseInterface {
         $search = array(
             'page'          => $this->request->getVar('page'),
@@ -91,9 +123,10 @@ class Dashboard extends ResourceController
         }
     }
 
-    public function getListIGD(): ResponseInterface {
+    public function getListIgd(): ResponseInterface {
         $search = array(
-            'jenis_igd' => $this->request->getVar('jenis_igd'),
+            'page'          => $this->request->getVar('page'),
+            'jenis_igd'     => $this->request->getVar('jenis_igd'),
             'kelamin'       => $this->request->getVar('kelamin'),
             'start_date'    => $this->request->getVar('start_date'),
             'end_date'      => $this->request->getVar('end_date')

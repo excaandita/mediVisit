@@ -11,35 +11,35 @@
 
         $(document).ready(function() {
 
-            $('#select_klinik').val('')
+            $('#select_jenis_igd').val('')
             $('#select_penjamin').val('')
             $('#start_date_search').val('<?= date('Y-m-01') ?>');
             $('#end_date_search').val('<?= date('Y-m-d') ?>');
             
-            get_list_poliklinik(); // Initial load
+            get_list_igd(); // Initial load
 
             // Handle pagination click
             $(document).on('click', '#pagination .page-link', function(e) {
                 e.preventDefault();
                 var page = $(this).data('page');
                 if (page) {
-                    get_list_poliklinik(page);
+                    get_list_igd(page);
                 }
             });
 
             $('#btn_search').click(function() {
 
-                loadSelectOptions('select_klinik', 'klinik');
+                loadSelectOptionsIGD();
                 loadSelectOptions('select_penjamin', 'penjamin');
 
                 $('#add_modal').modal('show');
                 $('.modal-title').html('Pencarian')
             });
 
-            $('#select_klinik').on('change', function() {
-                var selectedOptionKlinik = $('#select_klinik option:selected');
-                var clinicName = selectedOptionKlinik.text();
-                $('#clinic_name_span').val(clinicName);
+            $('#select_jenis_igd').on('change', function() {
+                var selectedOptionIgd = $('#select_jenis_igd option:selected');
+                var clinicName = selectedOptionIgd.text();
+                $('#jenis_igd_name_span').val(clinicName);
             });
 
             $('#select_penjamin').on('change', function() {
@@ -103,27 +103,52 @@
             });
         }
 
+        function loadSelectOptionsIGD() {
+            const penjamin = [
+                {id: 'Umum', nama: 'Umum'},
+                {id: 'Kamar Bersalin', nama: 'Kamar Bersalin'},
+                {id: 'Hemodialisa', nama: 'Hemodialisa'},
+                {id: 'Kemoterapi', nama: 'Kemoterapi'},
+                {id: 'Ponek', nama: 'Ponek'},
+                {id: 'Visum', nama: 'Visum'},
+                {id: 'Bedah', nama: 'Bedah'},
+                {id: 'Anak', nama: 'Anak'},
+                {id: 'Kebidanan', nama: 'Kebidanan'},
+                {id: 'Maternal', nama: 'Maternal'}
+            ]
+
+            var $select = $('#select_jenis_igd');
+            var selectedValue = $select.val(); // Ambil nilai yang sudah dipilih sebelumnya
+
+            $select.empty(); 
+            $select.append('<option value="">Pilih</option>'); 
+
+            penjamin.forEach(function(item) {
+                var isSelected = (item.id === selectedValue) ? ' selected' : '';
+                $select.append('<option value="' + item.id + '"' + isSelected + '>' + item.nama + '</option>');
+            });
+        }
 
         function formatNumber(number) {
             let formatter = new Intl.NumberFormat('id-ID');
             return formatter.format(number);
         }
 
-        function get_list_poliklinik(page = 1) {
+        function get_list_igd(page = 1) {
             let startDate = $('#start_date_search').val();
             let endDate = $('#end_date_search').val();
-            let poliklinikData = $('#clinic_name_span').val() != '' && $('#select_klinik').val() != '' ? $('#clinic_name_span').val() : 'Semua';
+            let igdData = $('#jenis_igd_name_span').val() != '' && $('#select_jenis_igd').val() != '' ? $('#jenis_igd_name_span').val() : 'Semua';
             let penjaminData = $('#penjamin_name_span').val() != '' && $('#select_penjamin').val() != '' ? $('#penjamin_name_span').val() : 'Semua';
 
             $('#tanggal_data').html(`Data tanggal :<b> ${formatDateIndo(startDate)} s.d ${formatDateIndo(endDate)}</b>`);
-            $('#poliklinik_data').html(`Data Poliklinik  :<b> ${poliklinikData}</b>`);
+            $('#jenis_igd_data').html(`Jenis IGD  :<b> ${igdData}</b>`);
             $('#penjamin_data').html(`Data Penjamin  :<b> ${penjaminData}</b>`);
 
-            $('.table-poliklinik tbody').empty();
+            $('.table-igd tbody').empty();
 
             $.ajax({
                 type: 'GET',
-                url: '<?= base_url() ?>/api/dashboard/listPoliklinik',
+                url: '<?= base_url() ?>/api/dashboard/listIgd',
                 data: $('#search_form').serialize()+'&page='+page,
                 dataType: 'json',
                 beforeSend: function() {
@@ -141,8 +166,6 @@
                     let kunjunganData = [];
                     let labels = [];
 
-                    console.log(labels);
-
                     if(response.penjamin.length !== 0) {
                         $.each(response.penjamin, function(i, v) {
                             str = '<tr>'+
@@ -156,7 +179,7 @@
                                     '<td class="text-nowrap text-secondary">'+formatNumber(v.total_kunjungan)+'</td>'+
                                 '</tr>';
 
-                            $('.table-poliklinik tbody').append(str);
+                            $('.table-igd tbody').append(str);
 
                             pengunjungData.push(v.total_pengunjung);
                             kunjunganData.push(v.total_kunjungan);
@@ -166,7 +189,7 @@
                         str = '<tr>'+
                                     '<td colspan=4 class="text-center">Data Not Found</td>'+
                                 '</tr>';
-                        $('.table-poliklinik tbody').append(str);
+                        $('.table-igd tbody').append(str);
                     }
 
                     renderChart(pengunjungData, kunjunganData, labels);
@@ -316,7 +339,7 @@
                     <!-- Page pre-title -->
                     <div class="col">
                         <div class="page-pretitle mb-2">Overview</div>
-                        <h2 class="page-title">Poliklinik</h2>
+                        <h2 class="page-title">IGD</h2>
                     </div>
                     <div class="col-auto ms-auto d-print-none">
                         <div class="btn-list">
@@ -340,13 +363,13 @@
                             <div class="col-sm-6 col-lg-12">
                                 <div class="card card-sm">
                                     <div class="card-body">
-                                        <input type="hidden" id="clinic_name_span">
+                                        <input type="hidden" id="jenis_igd_name_span">
                                         <input type="hidden" id="penjamin_name_span">
                                         <div class="row align-items-center">
                                             <div class="col-md-4">
                                                 <div class="font-weight-medium">
-                                                    <span id="poliklinik_data">
-                                                        <b>Data Poliklinik : </b>
+                                                    <span id="jenis_igd_data">
+                                                        <b>Jenis IGD : </b>
                                                     </span>
                                                 </div>
                                             </div>
@@ -374,7 +397,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h3 class="card-title">Grafik Pengujung Poliklinik</h3>
+                                <h3 class="card-title">Grafik Pengujung IGD</h3>
                                 <div id="chart-mentions" class="chart-lg"></div>
                             </div>
                         </div>
@@ -383,7 +406,7 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-table table-responsive">
-                                <table class="table table-vcenter table-poliklinik">
+                                <table class="table table-vcenter table-igd">
                                     <thead>
                                         <tr>
                                             <th>-</th>
@@ -392,26 +415,10 @@
                                             <th>Jumlah Kunjungan</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="w-1">
-                                                <span class="avatar avatar-sm">1</span>
-                                            </td>
-                                            <td class="td-truncate">
-                                                <div class="text-truncate">
-                                                    BPJS
-                                                </div>
-                                            </td>
-                                            <td class="text-nowrap text-secondary">120</td>
-                                            <td class="text-nowrap text-secondary">203</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                    <tbody></table>
                                 <div class="card-footer d-flex align-items-center">
                                     <p class="m-0 text-secondary">Showing <span id="start-entry">1</span> to <span id="end-entry">10</span> of <span id="total-entries">16</span> entries</p>
-                                    <ul class="pagination m-0 ms-auto" id="pagination">
-                                        <!-- Pagination links will be populated here -->
-                                    </ul>
+                                    <ul class="pagination m-0 ms-auto" id="pagination"></ul>
                                 </div>
                             </div>
                         </div>
@@ -432,24 +439,24 @@
                 <div class="modal-body">
                     <form id="search_form">
                         <div class="mb-3">
-                            <label class="form-label">Poliklinik</label>
-                            <select class="form-select search_poli" name="id_poliklinik" id="select_klinik"></select>
+                            <label class="form-label">Jenis IGD</label>
+                            <select class="form-select search_igd" name="jenis_igd" id="select_jenis_igd"></select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Penjamin</label>
-                            <select class="form-select search_poli" name="id_penjamin" id="select_penjamin"></select>
+                            <select class="form-select search_igd" name="id_penjamin" id="select_penjamin"></select>
                         </div>
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label class="form-label">Tanggal Awal</label>
-                                    <input type="date" name="start_date" id="start_date_search" class="form-control search_poli"  placeholder="tanggal"  autocomplete="off">
+                                    <input type="date" name="start_date" id="start_date_search" class="form-control search_igd"  placeholder="tanggal"  autocomplete="off">
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label class="form-label">Tanggal Akhir</label>
-                                    <input type="date" name="end_date" id="end_date_search" class="form-control search_poli"  placeholder="tanggal"  autocomplete="off">
+                                    <input type="date" name="end_date" id="end_date_search" class="form-control search_igd"  placeholder="tanggal"  autocomplete="off">
                                 </div>
                             </div>
                         </div>
@@ -457,7 +464,7 @@
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-link link-secondary" data-bs-dismiss="modal">Cancel </a>
-                    <button class="btn btn-primary ms-auto" data-bs-dismiss="modal" onclick="get_list_poliklinik(1)">
+                    <button class="btn btn-primary ms-auto" data-bs-dismiss="modal" onclick="get_list_igd(1)">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                         Pencarian
                     </button>

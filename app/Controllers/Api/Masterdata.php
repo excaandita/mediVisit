@@ -22,20 +22,38 @@ class Masterdata extends ResourceController
     }
 
     public function getKlinik(): ResponseInterface {
-        $search = array(
-            'page'  => $this->request->getVar('page'),
-            'q'     => $this->request->getVar('q'),
-            'ikw'   => $this->request->getVar('ikw'),
-            'filter_active'       => $this->request->getVar('filter_active')
-        );
-
-        $api = $this->apiUrl.'/e_doc_api/masterdata/klinik';
+        $api = $this->apiUrl.'/kunjungan_api/visit/poliklinik_list';
     
         $options = [
             'headers' => [
                 'Accept' => 'application/json',
-            ],
-            'query' => $search
+            ]
+        ];
+    
+        try {
+            $response = $this->client->get($api, $options);
+            $body = $response->getBody();
+            $data = json_decode($body, true);
+    
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \RuntimeException('Error parsing JSON response: ' . json_last_error_msg());
+            }
+    
+            return $this->respond($data, 200);
+    
+        } catch (\Exception $e) {
+            log_message('error', $e->getMessage());
+            return $this->respond(['error' => 'An error occurred while fetching data from the API.'], 500);
+        }
+    }
+
+    public function getPenjamin(): ResponseInterface {
+        $api = $this->apiUrl.'/kunjungan_api/visit/penjamin_list';
+    
+        $options = [
+            'headers' => [
+                'Accept' => 'application/json',
+            ]
         ];
     
         try {

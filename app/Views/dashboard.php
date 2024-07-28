@@ -27,12 +27,84 @@
             return formatter.format(number);
         }
 
+        function formatDateIndo(date) {
+            let buf = ''
+            if (date.indexOf("-") > -1) {
+                buf = date.split('-');
+            } else {
+                buf = date.split('/');
+            }
+
+            var bulan = ''
+            switch (buf[1]) {
+                case '01': bulan = 'Januari'; break;
+                case '02': bulan = 'Februari'; break;
+                case '03': bulan = 'Maret'; break;
+                case '04': bulan = 'April'; break;
+                case '05': bulan = 'Mei'; break;
+                case '06': bulan = 'Juni'; break;
+                case '07': bulan = 'Juli'; break;
+                case '08': bulan = 'Agustus'; break;
+                case '09': bulan = 'September'; break;
+                case '10': bulan = 'Oktober'; break;
+                case '11': bulan = 'November'; break;
+                case '12': bulan = 'Desember'; break;
+
+                default:
+                    break;
+            }
+
+            return buf[2] + " " + bulan + " " + buf[0];
+        }
+
         function get_data() {
+            let startDate = $('#start_date_search').val();
+            let endDate = $('#end_date_search').val();
+
+            get_data_widget();
+
             get_data_chart('Poliklinik', 'chart-poliklinik', 'table-poliklinik'); 
             get_data_chart('Rawat Inap', 'chart-rawat-inap', 'table-rawat-inap'); 
             get_data_chart('IGD', 'chart-igd', 'table-igd'); 
             get_data_chart('Laboratorium', 'chart-laboratorium', 'table-laboratorium'); 
             get_data_chart('Radiologi', 'chart-radiologi', 'table-radiologi'); 
+
+            $('#tanggal_data').html(`<b>Data tanggal : ${formatDateIndo(startDate)} s.d ${formatDateIndo(endDate)}</b>`);
+        }
+
+        function get_data_widget() {
+            $('.widget_pengunjung').html(`<b>0 Pasien</b>`);
+            $('.widget_kunjungan').html(`<b>0 Pasien</b>`);
+            $('.widget_laki').html(`<b>0 Pasien</b>`);
+            $('.widget_perempuan').html(`<b>0 Pasien</b>`);
+            
+            $.ajax({
+                type: 'GET',
+                url: '<?= base_url() ?>/api/dashboard/dashboardWidget',
+                data: $('#search_form').serialize(),
+                dataType: 'json',
+                beforeSend: function() {
+                    showLoading();
+                },
+                success: function(response) {
+                    if (response != undefined && response != null) {
+                        $('.widget_pengunjung').html(`<b>${response.total_pengunjung} Pasien</b>`);
+                        $('.widget_kunjungan').html(`<b>${response.total_kunjungan} Pasien</b>`);
+                        $('.widget_laki').html(`<b>${response.total_laki} Pasien</b>`);
+                        $('.widget_perempuan').html(`<b>${response.total_perempuan} Pasien</b>`);
+                    } 
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        title: "Access Failed",
+                        text: "Internal Server Error",
+                        icon: "error"
+                    });
+                },
+                complete: function() {
+                    hideLoading();
+                }
+            });
         }
 
         function get_data_chart(layanan, chartId, tableId) {
@@ -210,15 +282,15 @@
                                             <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <span class="bg-primary text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2" /><path d="M12 3v3m0 12v3" /></svg>
+                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-triangle-inverted"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.363 20.405l-8.106 -13.534a1.914 1.914 0 0 1 1.636 -2.871h16.214a1.914 1.914 0 0 1 1.636 2.871l-8.106 13.534a1.914 1.914 0 0 1 -3.274 0z" /></svg>
                                                 </span>
                                             </div>
                                             <div class="col">
                                                 <div class="font-weight-medium">
-                                                    <b>132 Pasien</b>
+                                                    <span class="widget_pengunjung"><b>0 Pasien</b></span>
                                                 </div>
                                                 <div class="text-secondary">
-                                                    Kunjungan Pasien Rawat Jalan
+                                                    Total Pengunjung Pasien
                                                 </div>
                                             </div>
                                         </div>
@@ -231,15 +303,15 @@
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <span class="bg-green text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
+                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-triangle-inverted"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20.118 3h-16.225a2.914 2.914 0 0 0 -2.503 4.371l8.116 13.549a2.917 2.917 0 0 0 4.987 .005l8.11 -13.539a2.914 2.914 0 0 0 -2.486 -4.386z" /></svg>    
                                                 </span>
                                             </div>
                                             <div class="col">
                                                 <div class="font-weight-medium">
-                                                    <b>78 Pasien</b>
+                                                    <span class="widget_kunjungan"><b>0 Pasien</b></span>
                                                 </div>
                                                 <div class="text-secondary">
-                                                    Kunjungan Pasien Rawat Inap
+                                                    Total Kunjungan Pasien
                                                 </div>
                                             </div>
                                         </div>
@@ -252,15 +324,15 @@
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <span class="bg-twitter text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-twitter -->
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c0 -.249 1.51 -2.772 1.818 -4.013z" /></svg>
+                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-gender-male"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 14m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" /><path d="M19 5l-5.4 5.4" /><path d="M19 5h-5" /><path d="M19 5v5" /></svg>
                                                 </span>
                                             </div>
                                             <div class="col">
                                                 <div class="font-weight-medium">
-                                                    <b>78 Pasien</b>
+                                                    <span class="widget_laki"><b>0 Pasien</b></span>
                                                 </div>
                                                 <div class="text-secondary">
-                                                    Kunjungan Pasien IGD
+                                                    Kunjungan Pasien Laki-laki
                                                 </div>
                                             </div>
                                         </div>
@@ -273,15 +345,36 @@
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <span class="bg-facebook text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" /></svg>
+                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-gender-female"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" /><path d="M12 14v7" /><path d="M9 18h6" /></svg>
                                                 </span>
                                             </div>
                                             <div class="col">
                                                 <div class="font-weight-medium">
-                                                    <b>2378 Pasien</b>
+                                                    <span class="widget_perempuan"><b>0 Pasien</b></span>
                                                 </div>
                                                 <div class="text-secondary">
-                                                    Total Kehadiran Pasien 
+                                                    Kunjungan Pasien Perempuan
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="row row-cards">
+                            <div class="col-sm-6 col-lg-12">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                           
+                                            <div class="col">
+                                                <div class="font-weight-medium">
+                                                    <span id="tanggal_data">
+                                                        <b>Data Tanggal : </b>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
