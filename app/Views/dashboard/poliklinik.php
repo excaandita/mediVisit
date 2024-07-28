@@ -439,6 +439,14 @@
                             <label class="form-label">Penjamin</label>
                             <select class="form-select search_poli" name="id_penjamin" id="select_penjamin"></select>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kelamin</label>
+                            <select class="form-select search_poli" name="kelamin" id="kelamin_search">
+                                <option value="" selected disable>Pilih</option>
+                                <option value="L">Laki-laki</option>
+                                <option value="P">Perempuan</option>
+                            </select>
+                        </div>
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="mb-3">

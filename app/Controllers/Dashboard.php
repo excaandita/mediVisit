@@ -24,4 +24,18 @@ class Dashboard extends BaseController
 
         return view('dashboard/rawat-inap', $data);
     }
+
+    public function getPenunjangRadiologi(): string
+    {
+        $data['title'] = "Penunjang Radiologi";
+
+        return view('dashboard/penunjang-radiologi', $data);
+    }
+
+    public function getPenunjangLaboratorium(): string
+    {
+        $data['title'] = "Penunjang Laboratorium";
+
+        return view('dashboard/penunjang-laboratorium', $data);
+    }
 }

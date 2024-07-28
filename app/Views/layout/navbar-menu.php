@@ -13,7 +13,8 @@ $menuItems = [
             ['name' => 'Poliklinik', 'url' => '/dashboard/poliklinik'],
             ['name' => 'IGD', 'url' => '/dashboard/igd'],
             ['name' => 'Rawat Inap', 'url' => '/dashboard/rawatInap'],
-            ['name' => 'Penunjang', 'url' => '/dashboard/penunjang'],
+            ['name' => 'Penunjang Radiologi', 'url' => '/dashboard/penunjangRadiologi'],
+            ['name' => 'Penunjang Laboratorium', 'url' => '/dashboard/penunjangLaboratorium'],
         ],
     ],
     [
