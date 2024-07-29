@@ -25,6 +25,10 @@
 
         function reset_form() {
             $('.add_user').val('');
+            $('.update_user').show();
+
+            $('#password_user').attr('disabled', false);
+            $('#password_user').attr('read-only', false);    
         }
 
         function get_list_user() {
