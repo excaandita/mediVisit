@@ -273,6 +273,19 @@
         <div class="page-body">
             <div class="container-xl">
                 <div class="row row-deck row-cards">
+
+                    <div class="col-12">
+                        <div class="card card-md">
+                            <div class="card-body" style="padding: 20px;">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h1 class="h2">Halo, <?= session()->get('name'); ?> </h1>
+                                        <p class="m-0 text-secondary">Selamat datang di Dashboard RUMKIT TNI-AD TK III IM 06.01 LHOKSEUMAWE </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="col-12">
                         <div class="row row-cards">
