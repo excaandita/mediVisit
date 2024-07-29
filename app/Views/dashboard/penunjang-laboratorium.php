@@ -1,7 +1,7 @@
 <?= $this->extend('layout/default') ?>
 
 <?= $this->section('title') ?>
-    <title>Dashboard &mdash; <?= $title ?></title>
+    <title><?= $title ?> &mdash; RS TNI-AD TK III IM 06.01</title>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
