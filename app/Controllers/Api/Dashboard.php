@@ -58,7 +58,8 @@ class Dashboard extends ResourceController
     public function getDashboardWidget(): ResponseInterface {
         $search = array(
             'start_date'    => $this->request->getVar('start_date'),
-            'end_date'      => $this->request->getVar('end_date')
+            'end_date'      => $this->request->getVar('end_date'),
+            'period'       => $this->request->getVar('period'),
         );
 
         $api = $this->apiUrl.'/kunjungan_api/visit/dashboard_widget';
@@ -262,6 +263,61 @@ class Dashboard extends ResourceController
         } catch (\Exception $e) {
             log_message('error', $e->getMessage());
             return $this->respond(['error' => 'An error occurred while fetching data from the API.'], 500);
+        }
+    }
+
+    public function getDataPendapatan(): ResponseInterface {
+        $search = array(
+            'month' => $this->request->getVar('month'),
+            'year'  => $this->request->getVar('year')
+        );
+
+        $api = $this->apiUrl.'/kunjungan_api/visit/pendapatan_all';
+    
+        $options = [
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
+            'query' => $search
+        ];
+
+        try {
+            $response = $this->client->get($api, $options);
+            $body = $response->getBody();
+            $data = json_decode($body, true);
+    
+            // header('Content-Type: application/json');
+            // die(json_encode($data));
+
+            if ($data !== null) {
+                $response = array(
+                    "metadata" => array(
+                        "code" => 200,
+                        "message" => "Success"
+                    ),
+                    "response" => $data
+                );
+            } else {
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new \RuntimeException('Error parsing JSON response: ' . json_last_error_msg());
+                }
+            }
+        
+            return $this->respond($response, 200);
+    
+        } catch (\Exception $e) {
+
+            return $this->respond(
+                array(
+                    "metadata" => array(
+                        "code" => 500,
+                        "message" => 'An error occurred while fetching data from the API.'
+                    ),
+                    "response" => [
+                        "message" => $e->getMessage()
+                    ]
+                )
+            , 500);
         }
     }
 }

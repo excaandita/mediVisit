@@ -4,38 +4,18 @@ namespace App\Controllers;
 
 class Dashboard extends BaseController
 {
-    public function getPoliklinik(): string
+    public function getPendapatan(): string 
     {
-        $data['title'] = "Poliklinik";
+        $data['title'] = "Analisa Pendapatan";
 
-        return view('dashboard/poliklinik', $data);
+        return view('dashboard/pendapatan', $data);
+
     }
 
-    public function getIgd(): string
+    public function getKunjungan(): string
     {
-        $data['title'] = "IGD";
+        $data['title'] = "Analisa Kunjungan";
 
-        return view('dashboard/igd', $data);
-    }
-
-    public function getRawatInap(): string 
-    {
-        $data['title'] = "Rawat Inap";
-
-        return view('dashboard/rawat-inap', $data);
-    }
-
-    public function getPenunjangRadiologi(): string
-    {
-        $data['title'] = "Penunjang Radiologi";
-
-        return view('dashboard/penunjang-radiologi', $data);
-    }
-
-    public function getPenunjangLaboratorium(): string
-    {
-        $data['title'] = "Penunjang Laboratorium";
-
-        return view('dashboard/penunjang-laboratorium', $data);
+        return view('dashboard/kunjungan', $data);
     }
 }

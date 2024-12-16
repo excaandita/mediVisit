@@ -69,47 +69,10 @@
         function get_data() {
             let periodeDate = $('#period_month').val();
             
-            get_data_widget();
+            // get_data_widget();
             get_data_pendapatan();
 
             $('#tanggal_data').html(`<b>Periode Bulan : ${formatDateIndo(periodeDate)}</b>`);
-        }
-
-        function get_data_widget() {
-            $('.widget_pengunjung').html(`<b>0</b>`);
-            $('.widget_kunjungan').html(`<b>0</b>`);
-            $('.widget_laki').html(`<b>0</b>`);
-            $('.widget_perempuan').html(`<b>0</b>`);
-
-            let periodMonth = $('#period_month').val();
-            
-            $.ajax({
-                type: 'GET',
-                url: '<?= base_url() ?>/api/dashboard/dashboardWidget',
-                data: `start_date=${periodMonth}&end_date=&period=month`,
-                dataType: 'json',
-                beforeSend: function() {
-                    showLoading();
-                },
-                success: function(response) {
-                    if (response != undefined && response != null) {
-                        animateValue('widget_pengunjung', 0, response.total_pengunjung, 3000);
-                        animateValue('widget_kunjungan', 0, response.total_kunjungan, 3000);
-                        animateValue('widget_laki', 0, response.total_laki, 3000);
-                        animateValue('widget_perempuan', 0, response.total_perempuan, 3000);
-                    } 
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire({
-                        title: "Access Failed",
-                        text: "Internal Server Error",
-                        icon: "error"
-                    });
-                },
-                complete: function() {
-                    hideLoading();
-                }
-            });
         }
 
         function get_data_chart(layanan, chartId, tableId) {
@@ -301,6 +264,7 @@
         }
 
         function get_data_pendapatan() {
+            showLoading();
 
             $('#table-analisa-rajal tbody').empty();
             $('#table-analisa-ranap tbody').empty();
@@ -308,6 +272,11 @@
             $('#table-summary-analisa tbody').empty();
             $('#table-summary-analisa-total tbody').empty();
             $('#table-grand-total tbody').empty();
+
+            $('.widget_total_pasien').html(`<b>0</b>`);
+            $('.widget_total_nominal').html(`<b>0</b>`);
+            $('.widget_avg_pasien').html(`<b>0</b>`);
+            $('.widget_avg_nominal').html(`<b>0</b>`);
 
             let periodMonth = $('#period_month').val();
             let splitPeriod = periodMonth.split('-');
@@ -321,11 +290,13 @@
                     showLoading();
                 },
                 success: function(response) {
+                    hideLoading();
+
                     console.log(response);
-                    if (response.data.rawat_jalan) {
+                    if (response.response.data.rawat_jalan) {
                         let strRajal = '';
-                        $.each(response.data.rawat_jalan.bpjs, function(i, v) {
-                            let dataRajal = response.data.rawat_jalan
+                        $.each(response.response.data.rawat_jalan.bpjs, function(i, v) {
+                            let dataRajal = response.response.data.rawat_jalan
                             strRajal = '<tr>'+
                                     `<td>Minggu ${v.week}</td>`+
                                     `<td>${v.start_date} s.d ${v.end_date}</td>`+
@@ -342,8 +313,8 @@
                         });
 
                         let strRanap = '';
-                        $.each(response.data.rawat_inap.bpjs, function(i, v) {
-                            let dataRanap = response.data.rawat_inap
+                        $.each(response.response.data.rawat_inap.bpjs, function(i, v) {
+                            let dataRanap = response.response.data.rawat_inap
                             strRanap = '<tr>'+
                                     `<td>Minggu ${v.week}</td>`+
                                     `<td>${v.start_date} s.d ${v.end_date}</td>`+
@@ -360,7 +331,7 @@
                         });
 
                         let strSummaryBpjs = '';
-                        let dataSummary = response.data.summary
+                        let dataSummary = response.response.data.summary
                         strSummaryBpjs = `
                                 <tr>
                                     <td><b>Rawat Jalan</b></td>
@@ -425,7 +396,7 @@
                     let nominalChart = [];
 
                     let strGrandTotal = '';
-                    $.each(response.data.total, function(i, v) {
+                    $.each(response.response.data.total, function(i, v) {
                         strGrandTotal = '<tr>'+
                                 `<td>Minggu ${v.week}</td>`+
                                 '<td class="text-nowrap " style=" text-align: right;">'+formatNumber(v.pasien)+'</td>'+
@@ -440,7 +411,7 @@
                     });
 
                     let strChartVisit   = '';
-                    let dataChartVisit  = response.data.chart.visitation
+                    let dataChartVisit  = response.response.data.chart.visitation
 
                     $('#table-chart-visit tbody').empty();
 
@@ -464,7 +435,7 @@
 
 
                     let strChartIncome   = '';
-                    let dataChartIncome  = response.data.chart.income
+                    let dataChartIncome  = response.response.data.chart.income
 
                     $('#table-chart-income tbody').empty();
 
@@ -489,6 +460,13 @@
                     renderChartComp('chart-completion-tasks-9', labelChart, dataChart, nominalChart);
                     renderChartPie('chart-completion-tasks-10', labelVisit, dataVisit)
                     renderChartPie('chart-completion-tasks-11', labelIncome, dataIncome)
+
+                    animateValue('widget_total_pasien', 0, response.response.data.summary.grand_total.pasien, 3000);
+                    animateValue('widget_total_nominal', 0, response.response.data.summary.grand_total.pendapatan, 4000);
+                    animateValue('widget_avg_pasien', 0, Math.round(response.response.data.summary.grand_total.avg_pasien), 3000);
+                    animateValue('widget_avg_nominal', 0, response.response.data.summary.grand_total.avg_pendapatan, 4000);
+
+                    hideLoading();
                 },
                 error: function(xhr, status, error) {
                     Swal.fire({
@@ -505,34 +483,36 @@
 
         function animateValue(id, start, end, duration) {
             const INTERVAL_TIME = 10;
-                if (duration < 100) {
-                    duration = 100;
-                } else if (duration > 10000) {
-                    duration = 10000;
-                }
 
-            let obj      = document.getElementById(id);
-            let decimals = (end % 1 != 0) ? (end.toString().split('.')[1] || '').length : 0;
-            
+            // Batas durasi
+            if (duration < 100) {
+                duration = 100;
+            } else if (duration > 10000) {
+                duration = 10000;
+            }
+
+            let obj = document.getElementById(id);
+            let decimals = (end % 1 !== 0) ? (end.toString().split('.')[1] || '').length : 0;
+
             if (end === start) {
-                obj.innerHTML = start.toFixed(decimals);
+                obj.innerHTML = formatNumber(start.toFixed(decimals));
                 return;
             }
-                
+
             const stepTime = Math.ceil(duration / INTERVAL_TIME);
             let doneLoops = 0;
 
             let quantityPerLoop = end / stepTime;
 
             let increment = (end - start) / stepTime;
-            let current   = start;
+            let current = start;
 
             const INTERVAL = setInterval(function () {
                 current += quantityPerLoop;
-                obj.innerHTML = current.toFixed(decimals);
+                obj.innerHTML = formatNumber(current.toFixed(decimals));
                 if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
                     clearInterval(INTERVAL);
-                    obj.innerHTML = parseFloat(end).toFixed(decimals);
+                    obj.innerHTML = formatNumber(parseFloat(end).toFixed(decimals));
                 }
             }, INTERVAL_TIME);
         }
@@ -565,20 +545,7 @@
             <div class="container-xl">
                 <div class="row row-deck row-cards">
 
-                    <div class="col-12">
-                        <div class="card card-md">
-                            <div class="card-body" style="padding: 20px;">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h1 class="h2">Halo, <?= session()->get('name'); ?> </h1>
-                                        <p class="m-0 text-secondary">Selamat datang di Dashboard Rumah Sakit Menteng Mitra Afia</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12">
+                    <div class="col-lg-12 col-sm-12">
                         <div class="row row-cards">
                             <div class="col-sm-6 col-lg-12">
                                 <div class="card card-sm">
@@ -612,10 +579,10 @@
                                             </div>
                                             <div class="col">
                                                 <div class="font-weight-medium">
-                                                    <b><span class="counter widget_pengunjung" id="widget_pengunjung"></span> Pasien</b>
+                                                    <b><span class="counter widget_total_pasien" id="widget_total_pasien"></span> Pasien</b>
                                                 </div>
                                                 <div class="text-secondary">
-                                                    Total Pengunjung Pasien
+                                                    Total Pasien
                                                 </div>
                                             </div>
                                         </div>
@@ -628,15 +595,15 @@
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <span class="bg-green text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
-                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-triangle-inverted"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20.118 3h-16.225a2.914 2.914 0 0 0 -2.503 4.371l8.116 13.549a2.917 2.917 0 0 0 4.987 .005l8.11 -13.539a2.914 2.914 0 0 0 -2.486 -4.386z" /></svg>    
+                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cash-banknote"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M3 6m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M18 12l.01 0" /><path d="M6 12l.01 0" /></svg>
                                                 </span>
                                             </div>
                                             <div class="col">
                                                 <div class="font-weight-medium">
-                                                    <b><span class="counter widget_kunjungan" id="widget_kunjungan"></span> Pasien</b>
+                                                    <b>Rp. <span class="counter widget_total_nominal" id="widget_total_nominal"></span></b>
                                                 </div>
                                                 <div class="text-secondary">
-                                                    Total Kunjungan Pasien
+                                                    Total Nominal 
                                                 </div>
                                             </div>
                                         </div>
@@ -649,15 +616,15 @@
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <span class="bg-twitter text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-twitter -->
-                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-gender-male"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 14m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" /><path d="M19 5l-5.4 5.4" /><path d="M19 5h-5" /><path d="M19 5v5" /></svg>
+                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-triangle-inverted"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20.118 3h-16.225a2.914 2.914 0 0 0 -2.503 4.371l8.116 13.549a2.917 2.917 0 0 0 4.987 .005l8.11 -13.539a2.914 2.914 0 0 0 -2.486 -4.386z" /></svg>    
                                                 </span>
                                             </div>
                                             <div class="col">
                                                 <div class="font-weight-medium">
-                                                    <b><span class="counter widget_laki" id="widget_laki"></span> Pasien</b>
+                                                    <b><span class="counter widget_avg_pasien" id="widget_avg_pasien"></span> Pasien</b>
                                                 </div>
                                                 <div class="text-secondary">
-                                                    Kunjungan Pasien Laki-laki
+                                                    Avg. Pasien / Day
                                                 </div>
                                             </div>
                                         </div>
@@ -670,21 +637,218 @@
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <span class="bg-facebook text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
-                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-gender-female"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" /><path d="M12 14v7" /><path d="M9 18h6" /></svg>
+                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-cash"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 9m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" /><path d="M14 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2" /></svg>
                                                 </span>
                                             </div>
                                             <div class="col">
                                                 <div class="font-weight-medium">
-                                                    <b><span class="counter widget_perempuan" id="widget_perempuan"></span> Pasien</b>
+                                                    <b>Rp. <span class="counter widget_avg_nominal" id="widget_avg_nominal"></span></b>
                                                 </div>
                                                 <div class="text-secondary">
-                                                    Kunjungan Pasien Perempuan
+                                                Avg. Nominal / Day
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Analisa Rawat Jalan</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-vcenter card-table table-striped table-hover" id="table-analisa-rajal">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan=2>Minggu Ke-</th>
+                                            <th rowspan=2>Tgl</th>
+                                            <th class="text-center" colspan=2>Klaim BPJS</th>
+                                            <th class="text-center" >Tarif RS</th>
+                                            <th class="text-center" colspan=2>Asuransi Lain</th>
+                                            <th class="text-center" colspan=2>Tunai / Umum</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-center">Pasien</th>
+                                            <th class="text-center">Nominal (Rp.)</th>
+                                            <th class="text-center">Nominal (Rp.)</th>
+                                            <th class="text-center">Pasien</th>
+                                            <th class="text-center">Nominal (Rp.)</th>
+                                            <th class="text-center">Pasien</th>
+                                            <th class="text-center">Nominal (Rp.)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Analisa Rawat Inap</h3>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-vcenter card-table table-striped table-hover" id="table-analisa-ranap">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan=2>Minggu Ke-</th>
+                                            <th rowspan=2>Tgl</th>
+                                            <th class="text-center" colspan=2>Klaim BPJS</th>
+                                            <th class="text-center" >Tarif RS</th>
+                                            <th class="text-center" colspan=2>Asuransi Lain</th>
+                                            <th class="text-center" colspan=2>Tunai / Umum</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-center">Pasien</th>
+                                            <th class="text-center">Nominal (Rp.)</th>
+                                            <th class="text-center">Nominal (Rp.)</th>
+                                            <th class="text-center">Pasien</th>
+                                            <th class="text-center">Nominal (Rp.)</th>
+                                            <th class="text-center">Pasien</th>
+                                            <th class="text-center">Nominal (Rp.)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="card">
+                            <div class="row row-0">
+                                <div class="card-body">
+                                    <h3 class="card-title">Grafik Kunjungan Pasien</h3>
+                                    <div id="chart-completion-tasks-10"></div>
+                                    <div class="table-responsive">
+                                        <table class="table table-vcenter card-table table-striped table-hover" id="table-chart-visit">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: right" >BPJS Rawat Jalan</th>
+                                                    <th style="text-align: right" >BPJS Rawat Inap</th>
+                                                    <th style="text-align: right" >Tunai/Umum</th>
+                                                    <th style="text-align: right" >Asuransi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="card">
+                            <div class="row row-0">
+                                <div class="card-body">
+                                    <h3 class="card-title">Grafik Pendapatan</h3>
+                                    <div id="chart-completion-tasks-11"></div>
+                                    <div class="table-responsive">
+                                        <table class="table table-vcenter card-table table-striped table-hover" id="table-chart-income">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: right" >BPJS Rawat Jalan</th>
+                                                    <th style="text-align: right" >BPJS Rawat Inap</th>
+                                                    <th style="text-align: right" >Tunai/Umum</th>
+                                                    <th style="text-align: right" >Asuransi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="row row-0">
+                                <div class="card-body">
+                                    <h3 class="card-title">Grafik Pasien</h3>
+                                    <div id="chart-completion-tasks-9"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Grand Total</h3>
+                                <div class="table-responsive">
+                                    <table class="table card-table table-striped table-hover" id="table-grand-total">
+                                        <thead>
+                                            <tr>
+                                                <th >Minggu Ke-</th>
+                                                <th class="text-center">Pasien</th>
+                                                <th class="text-center">Nominal (Rp.)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Summary Analisa</h3>
+                                <div class="table-responsive">
+                                    <table class="table table-vcenter card-table table-striped table-hover" id="table-summary-analisa-bpjs">
+                                        <thead>
+                                            <tr>
+                                                <th rowspan=2 width=30%></th>
+                                                <th class="text-center" colspan=2 >Klaim BPJS</th>
+                                                <th class="text-center" rowspan=2 >Tarif RS</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center" >Pasien</th>
+                                                <th class="text-center" >Nominal (Rp.)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <br/>
+                                <div class="table-responsive">
+                                    <table class="table table-vcenter card-table table-striped table-hover" id="table-summary-analisa">
+                                        <thead>
+                                            <tr>
+                                                <th width=31%></th>
+                                                <th class="text-center" >Pasien</th>
+                                                <th class="text-center" >Nominal (Rp.)</th>
+                                                <th class="text-center" ></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <br/>
+                                <div class="table-responsive">
+                                    <table class="table table-vcenter card-table table-striped table-hover" id="table-summary-analisa-total">
+                                        <thead>
+                                            <tr>
+                                                <th width=33%></th>
+                                                <th class="text-center" >Pasien</th>
+                                                <th class="text-center" >Nominal (Rp.)</th>
+                                                <th class="text-center" ></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
 
