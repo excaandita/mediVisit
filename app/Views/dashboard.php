@@ -277,7 +277,7 @@
                 grid: {
                     strokeDashArray: 6,
                 },
-                colors: [tabler.getColor("primary"), tabler.getColor("primary", 0.8), tabler.getColor("primary", 0.6), tabler.getColor("gray-300")],
+                colors: [tabler.getColor("primary"), tabler.getColor("primary", 0.8), tabler.getColor("primary", 0.6), tabler.getColor("gray-500")],
                 legend: {
                     show: true,
                     position: 'right',

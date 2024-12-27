@@ -219,8 +219,8 @@
             charts[chartId] = new ApexCharts(chartElement, {
                 chart: {
                     type: "pie",
-                    foreColor: '#f2f2f2',
-                    fontFamily: 'inherit',
+                    foreColor: '#373d3f',
+                    fontFamily: 'Helvetica, Arial, sans-serif',
                     height: 260,
                     sparkline: {
                         enabled: false,
@@ -230,17 +230,26 @@
                     },
                 },
                 fill: {
-                    opacity: 2,
+                    opacity: 4,
                 },
                 series: datas,
                 labels: labels,
                 tooltip: {
-                    theme: 'dark'
+                    theme: false
+                },
+                theme: {
+                    mode: 'light', 
+                    palette: 'palette2', 
+                    monochrome: {
+                        enabled: false,
+                        color: '#255aee',
+                        shadeTo: 'light',
+                        shadeIntensity: 0.65
+                    },
                 },
                 grid: {
-                    strokeDashArray: 6,
+                    strokeDashArray: 7,
                 },
-                colors: [tabler.getColor("primary"), tabler.getColor("primary", 0.8), tabler.getColor("primary", 0.6), tabler.getColor("gray-300")],
                 legend: {
                     show: true,
                     position: 'right',
@@ -547,7 +556,7 @@
 
                     <div class="col-lg-12 col-sm-12">
                         <div class="row row-cards">
-                            <div class="col-sm-6 col-lg-12">
+                            <div class="col-sm-12 col-lg-12">
                                 <div class="card card-sm">
                                     <div class="card-body">
                                         <div class="row align-items-center">
@@ -566,7 +575,7 @@
                         </div>
                     </div>
                     
-                    <div class="col-6">
+                    <div class="col-lg-6 col-sm-12">
                         <div class="row row-cards">
                             <div class="col-sm-6 col-lg-6">
                                 <div class="card card-sm">
@@ -655,6 +664,26 @@
                         </div>
                     </div>
 
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="card card-sm">
+                            <div class="card-stamp">
+                                <div class="card-stamp-icon bg-yellow">
+                                <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="card-title">Informasi</h3>
+                                <p class="text-secondary">
+                                    <ul>
+                                        <li>Data yang ditampilkan merupakan data pasien dengan <br/>status di SIMRS sudah <b>Pulang</b></li>
+                                        <li>Data BPJS Klaim yang ditampilkan adalah nilai klaim yang statusnya sudah <b>Final</b> di SIMRS Report</li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
@@ -663,7 +692,7 @@
                             <div class="table-responsive">
                                 <table class="table table-vcenter card-table table-striped table-hover" id="table-analisa-rajal">
                                     <thead>
-                                        <tr>
+                                    <tr>
                                             <th rowspan=2>Minggu Ke-</th>
                                             <th rowspan=2>Tgl</th>
                                             <th class="text-center" colspan=2>Klaim BPJS</th>
@@ -672,13 +701,13 @@
                                             <th class="text-center" colspan=2>Tunai / Umum</th>
                                         </tr>
                                         <tr>
-                                            <th class="text-center">Pasien</th>
-                                            <th class="text-center">Nominal (Rp.)</th>
-                                            <th class="text-center">Nominal (Rp.)</th>
-                                            <th class="text-center">Pasien</th>
-                                            <th class="text-center">Nominal (Rp.)</th>
-                                            <th class="text-center">Pasien</th>
-                                            <th class="text-center">Nominal (Rp.)</th>
+                                            <th style="text-align: right">Pasien</th>
+                                            <th style="text-align: right">Nominal (Rp.)</th>
+                                            <th style="text-align: right">Nominal (Rp.)</th>
+                                            <th style="text-align: right">Pasien</th>
+                                            <th style="text-align: right">Nominal (Rp.)</th>
+                                            <th style="text-align: right">Pasien</th>
+                                            <th style="text-align: right">Nominal (Rp.)</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -704,13 +733,13 @@
                                             <th class="text-center" colspan=2>Tunai / Umum</th>
                                         </tr>
                                         <tr>
-                                            <th class="text-center">Pasien</th>
-                                            <th class="text-center">Nominal (Rp.)</th>
-                                            <th class="text-center">Nominal (Rp.)</th>
-                                            <th class="text-center">Pasien</th>
-                                            <th class="text-center">Nominal (Rp.)</th>
-                                            <th class="text-center">Pasien</th>
-                                            <th class="text-center">Nominal (Rp.)</th>
+                                            <th style="text-align: right">Pasien</th>
+                                            <th style="text-align: right">Nominal (Rp.)</th>
+                                            <th style="text-align: right">Nominal (Rp.)</th>
+                                            <th style="text-align: right">Pasien</th>
+                                            <th style="text-align: right">Nominal (Rp.)</th>
+                                            <th style="text-align: right">Pasien</th>
+                                            <th style="text-align: right">Nominal (Rp.)</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -787,8 +816,8 @@
                                         <thead>
                                             <tr>
                                                 <th >Minggu Ke-</th>
-                                                <th class="text-center">Pasien</th>
-                                                <th class="text-center">Nominal (Rp.)</th>
+                                                <th style="text-align: right">Pasien</th>
+                                                <th style="text-align: right">Nominal (Rp.)</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -812,8 +841,8 @@
                                                 <th class="text-center" rowspan=2 >Tarif RS</th>
                                             </tr>
                                             <tr>
-                                                <th class="text-center" >Pasien</th>
-                                                <th class="text-center" >Nominal (Rp.)</th>
+                                                <th style="text-align: right">Pasien</th>
+                                                <th style="text-align: right">Nominal (Rp.)</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -825,9 +854,9 @@
                                         <thead>
                                             <tr>
                                                 <th width=31%></th>
-                                                <th class="text-center" >Pasien</th>
-                                                <th class="text-center" >Nominal (Rp.)</th>
-                                                <th class="text-center" ></th>
+                                                <th style="text-align: right" >Pasien</th>
+                                                <th style="text-align: right" >Nominal (Rp.)</th>
+                                                <th style="text-align: right" ></th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -839,9 +868,9 @@
                                         <thead>
                                             <tr>
                                                 <th width=33%></th>
-                                                <th class="text-center" >Pasien</th>
-                                                <th class="text-center" >Nominal (Rp.)</th>
-                                                <th class="text-center" ></th>
+                                                <th style="text-align: right" >Pasien</th>
+                                                <th style="text-align: right" >Nominal (Rp.)</th>
+                                                <th style="text-align: right" ></th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>

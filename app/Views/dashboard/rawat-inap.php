@@ -1,7 +1,7 @@
 <?= $this->extend('layout/default') ?>
 
 <?= $this->section('title') ?>
-    <title><?= $title ?> &mdash; RS TNI-AD TK III IM 06.01</title>
+    <title><?= $title ?> &mdash; RS Menteng Mitra Afia</title>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>

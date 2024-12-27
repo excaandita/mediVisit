@@ -6,7 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
         <link rel="icon" href="<?= base_url('template/static/logo-small.svg')?>" type="image/x-icon">
 
-        <title>Login &mdash; RS TNI-AD TK III IM 06.01</title>
+        <title>Login &mdash; RS Menteng Mitra Afia</title>
         
         <!-- CSS files -->
         <link href="<?= base_url('template/dist/css/tabler.min.css?1692870487')?>" rel="stylesheet"/>
@@ -32,7 +32,7 @@
                     <div class="col-lg">
                         <div class="container-tight">
                             <div class="text-center mb-4">
-                                <a href="." class="navbar-brand navbar-brand-autodark"><img src="<?= base_url()?>/template/static/logo-login.svg" height="80" width="340" alt=""></a>
+                                <a href="." class="navbar-brand navbar-brand-autodark"><img src="<?= base_url()?>/template/static/logo.svg" height="80" width="340" alt=""></a>
                             </div>
                             <div class="card card-md">
                                 <div class="card-body">
