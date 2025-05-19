@@ -51,7 +51,7 @@ class waPendapatanHarian extends ResourceController
     }
 
     public function getDataPendapatanPerHari() : ResponseInterface {
-        $date = date('Y-m-d');
+        $date = date('Y-m-d', strtotime('-1 day'));
 
         $result = $this->fetchDataPendapatanPerHari($date);
         if ($result['success']) {
@@ -158,7 +158,8 @@ class waPendapatanHarian extends ResourceController
 
         return $this->response->setJSON([
             'status' => 'success',
-            'message' => 'Pesan berhasil dikirim.'
+            'message' => 'Pesan berhasil dikirim.',
+            'tanggal' => $startDate
         ]);
     }
 
