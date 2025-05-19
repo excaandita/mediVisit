@@ -10,7 +10,7 @@ class User extends Model
     protected $table            = 'users';
     protected $primaryKey       = 'id';
     protected $returnType       = 'object';
-    protected $allowedFields    = ['username', 'email', 'password', 'name', 'token', 'active', 'deleted_at', 'expiry_token'];
+    protected $allowedFields    = ['username', 'email', 'no_hp', 'aktif_wa', 'password', 'name', 'token', 'active', 'deleted_at', 'expiry_token'];
     protected $useTimestamps    = true;
     protected $useSoftDeletes   = true;
 
@@ -81,12 +81,15 @@ class User extends Model
         }
         
         if(isset($param['id']) && !empty($param['id'])) {
+            // echo 'isi dari params' + $param['username'];
             $data = array(
                 "id" => $param['id'],
                 "username" => $param['username'],
                 "email" => $param['email'],
+                "no_hp" => $param['no_hp'],
+                "aktif_wa" => $param['aktif_wa'],
                 "name" => $param['name'],
-                "active" => $param['active']
+                "active" => $param['active'],
             );
         } else {
             $data = $param;
@@ -175,5 +178,20 @@ class User extends Model
             'token' => null, 
             'expiry_token' => null
         ]);
+    }
+
+    public function get_phone_user()
+    {
+        $sql = "SELECT no_hp FROM users WHERE aktif_wa = 'Aktif'";
+        $query = $this->query($sql);
+
+        $result = $query->getResult();
+        $phones = [];
+
+        foreach ($result as $row) {
+            $phones[] = $row->no_hp;
+        }
+
+        return $phones;
     }
 }

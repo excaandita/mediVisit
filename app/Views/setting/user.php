@@ -189,6 +189,8 @@
                     $('#email_user').val(data.data.email);
                     $('#password_user').val(data.data.password);
                     $('#active_user').val(data.data.active);
+                    $('#hp_user').val(data.data.no_hp);
+                    $('#wa_user').val(data.data.aktif_wa);
 
                     $('.update_user').hide();
 
@@ -336,6 +338,24 @@
                         <div class="mb-3">
                             <label class="form-label">Email</label>
                             <input type="email" class="form-control add_user" name="email" id="email_user" placeholder="Email">
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="mb-3">
+                                    <label class="form-label">Nomor Handphone</label>
+                                    <input type="tel" pattern="[0-9]{10,15}" title="Masukkan 10 hingga 15 digit angka" name="no_hp" id="hp_user" class="form-control add_user"  placeholder="083xxxxxxxx"  autocomplete="off" >
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Aktif WA</label>
+                                    <select class="form-select" name="aktif_wa" id="wa_user">
+                                        <option value="" selected disable>Pilih</option>
+                                        <option value="Aktif">Aktif</option>
+                                        <option value="Tidak">Tidak</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-8 update_user">

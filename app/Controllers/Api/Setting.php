@@ -67,6 +67,8 @@ class Setting extends ResourceController
             'id' => $id,
             'username' => $this->request->getPost('username'),
             'email' => $this->request->getPost('email'),
+            'no_hp' => $this->request->getPost('no_hp'),
+            'aktif_wa' => $this->request->getPost('aktif_wa'),
             'password' => $this->request->getPost('password'),
             'name' => $this->request->getPost('name'),
             'active' => $this->request->getPost('active')

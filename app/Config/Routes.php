@@ -13,3 +13,4 @@ $routes->setAutoRoute(true);
 $routes->get('/', 'Home::getDashboard');
 
 $routes->post('telegram/webhook', 'Telebot::webhook');
+$routes->post('script/waPendapatanHarian/sendMessage', '\App\Controllers\script\waPendapatanHarian::postSendMessage');
