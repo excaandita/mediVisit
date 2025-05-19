@@ -15,6 +15,7 @@ class waPendapatanHarian extends ResourceController
         $this->token = env('app.tokenBlast', '0000');
         $this->apiUrl = env('app.simrsURL', 'http://0.0.0.0:9000');
         $this->blastUrl = env('app.waBlastURL', '0000');
+        $this->RS = env('app.namaRS', 'Umum');
     }
 
     public function fetchDataPendapatanPerHari($date, $day_before=1) : array {
@@ -106,7 +107,7 @@ class waPendapatanHarian extends ResourceController
         $tagihanTunai = $result['response']['data']['summary']['tunai']['tagihan'];
         $tagihanAsuransi = $result['response']['data']['summary']['asuransi']['tagihan'];
         $message = <<<EOD
-        📊 LAPORAN KUNJUNGAN DAN PENDAPATAN RS TEST
+        📊 LAPORAN KUNJUNGAN DAN PENDAPATAN RS {$this->RS}
 
         🗓️ Tanggal : {$startDate} s.d {$endDate}
 
