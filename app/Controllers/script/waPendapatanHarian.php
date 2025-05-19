@@ -138,7 +138,6 @@ class waPendapatanHarian extends ResourceController
         Laporan ini dikirim secara otomatis sebagai bentuk transparansi dan pemantauan kinerja rumah sakit oleh manajemen.
 
         📌 Mohon tidak membalas pesan ini.
-        (test without reloading page)
         EOD;
 
         $params = [
