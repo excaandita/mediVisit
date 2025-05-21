@@ -89,32 +89,65 @@ class waPendapatanHarian extends ResourceController
         $phoneList = $userModel->get_phone_user();
         $phoneJson = json_encode($phoneList);
 
-        $response = $this->getDataPendapatanPerHari();
-        $body = $response->getBody();
-        $result = json_decode($body, true);
-        $startDate = $result['response']['start_date'];
-        $endDate = $result['response']['end_date'];
-        $pasienNow = $result['response']['data']['summary']['grand_total']['pasien'];
-        $incomeNow = $result['response']['data']['summary']['grand_total']['pendapatan'];
-        $pasienRajal = $result['response']['data']['summary']['bpjs']['rajal']['pasien'];
-        $pasienRanap = $result['response']['data']['summary']['bpjs']['ranap']['pasien'];
-        $klaimRajal = $result['response']['data']['summary']['bpjs']['rajal']['klaim'];
-        $klaimRanap = $result['response']['data']['summary']['bpjs']['ranap']['klaim'];
-        $tarifRajal = $result['response']['data']['summary']['bpjs']['rajal']['tagihan'];
-        $tarifRanap = $result['response']['data']['summary']['bpjs']['ranap']['tagihan'];
-        $pasienTunai = $result['response']['data']['summary']['tunai']['pasien'];
-        $pasienAsuransi = $result['response']['data']['summary']['asuransi']['pasien'];
-        $tagihanTunai = $result['response']['data']['summary']['tunai']['tagihan'];
-        $tagihanAsuransi = $result['response']['data']['summary']['asuransi']['tagihan'];
-        $message = <<<EOD
-        📊 LAPORAN KUNJUNGAN DAN PENDAPATAN RS {$this->RS}
+        $response   = $this->getDataPendapatanPerHari();
+        $body       = $response->getBody();
+        $result     = json_decode($body, true);
 
-        🗓️ Tanggal : {$startDate} s.d {$endDate}
+        $startDate      = $result['response']['start_date'];
+        $endDate        = $result['response']['end_date'];
+        $pasienNow      = $result['response']['data']['summary']['grand_total']['pasien'];
+        $incomeNow      = number_format($result['response']['data']['summary']['grand_total']['pendapatan'], 2, ',', '.');
+        $pasienRajalBpjs = $result['response']['data']['summary']['bpjs']['rajal']['pasien'];
+        $pasienRanap    = $result['response']['data']['summary']['bpjs']['ranap']['pasien'];
+        $klaimRajal     = $result['response']['data']['summary']['bpjs']['rajal']['klaim'];
+        $klaimRanap     = $result['response']['data']['summary']['bpjs']['ranap']['klaim'];
+        $tarifRajal     = $result['response']['data']['summary']['bpjs']['rajal']['tagihan'];
+        $tarifRanap     = $result['response']['data']['summary']['bpjs']['ranap']['tagihan'];
+        $pasienTunai    = $result['response']['data']['summary']['tunai']['pasien'];
+        $pasienAsuransi = $result['response']['data']['summary']['asuransi']['pasien'];
+        $tagihanTunai   = $result['response']['data']['summary']['tunai']['tagihan'];
+        $tagihanAsuransi = $result['response']['data']['summary']['asuransi']['tagihan'];
+
+        // Data Pasien RJ
+        $dataPasienRJTunai    = $result['response']['data']['rawat_jalan']['tunai'][0]['jumlah_transaksi_pasien'];
+        $dataPasienRJBPJS     = $result['response']['data']['rawat_jalan']['bpjs'][0]['jumlah_transaksi_pasien'];
+        $dataPasienRJAsuransi = $result['response']['data']['rawat_jalan']['asuransi'][0]['jumlah_transaksi_pasien'];
+
+        $totalPasienRJ = $dataPasienRJTunai + $dataPasienRJBPJS + $dataPasienRJAsuransi;
+        // echo "<pre>".number_format($result['response']['data']['rawat_jalan']['bpjs'][0]['total_tagihan_rs'], 2, ',', '.')."</pre>"; die;
+        
+        // Data Klaim RJ BPJS
+        $totalTagihanRJBpjs = number_format($result['response']['data']['rawat_jalan']['bpjs'][0]['total_tagihan_rs'],2, ',', '.');
+
+        $totalKlaimRJBpjs   = number_format($result['response']['data']['rawat_jalan']['bpjs'][0]['total_klaim'], 2, ',', '.');
+
+        // Data Pasien RI
+        $dataPasienRITunai    = $result['response']['data']['rawat_inap']['tunai'][0]['jumlah_transaksi_pasien'];
+        $dataPasienRIBPJS     = $result['response']['data']['rawat_inap']['bpjs'][0]['jumlah_transaksi_pasien'];
+        $dataPasienRIAsuransi = $result['response']['data']['rawat_inap']['asuransi'][0]['jumlah_transaksi_pasien'];
+
+        $totalPasienRI = $dataPasienRITunai + $dataPasienRIBPJS + $dataPasienRIAsuransi;
+
+        // Data Klaim RI BPJS
+        $totalTagihanRIBpjs = number_format($result['response']['data']['rawat_inap']['bpjs'][0]['total_tagihan_rs'], 2, ',', '.');
+        $totalKlaimRIBpjs   = number_format($result['response']['data']['rawat_inap']['bpjs'][0]['total_klaim'], 2, ',', '.');
+
+        // Asuransi RJ + RI
+        $totalPasienAsuransi  = $dataPasienRJAsuransi + $dataPasienRIAsuransi;
+        $totalNominalAsuransi = number_format(($result['response']['data']['rawat_jalan']['asuransi'][0]['total_nominal'] + $result['response']['data']['rawat_inap']['asuransi'][0]['total_nominal']), 2, ',', '.');
+
+        $totalPasienTunai  = $dataPasienRJTunai + $dataPasienRITunai;
+        $totalNominalTunai = number_format(($result['response']['data']['rawat_jalan']['tunai'][0]['total_nominal'] + $result['response']['data']['rawat_inap']['tunai'][0]['total_nominal']), 2, ',', '.');
+        
+        $message = <<<EOD
+        📊 LAPORAN KUNJUNGAN DAN PENDAPATAN HARIAN RS {$this->RS}
+
+        🗓️ Tanggal : {$startDate}
 
         🔹 Ringkasan Pasien & Pendapatan:
 
-        Total Pasien Rawat Jalan : {$pasienRajal}
-        Total Pasien Rawat Inap : {$pasienRanap}
+        Total Pasien Rawat Jalan : {$totalPasienRJ}
+        Total Pasien Rawat Inap : {$totalPasienRI}
         Total Pasien Hari Ini : {$pasienNow}
         Total Pendapatan : Rp. {$incomeNow}
 
@@ -123,18 +156,18 @@ class waPendapatanHarian extends ResourceController
         Klaim BPJS
 
         Rawat Jalan:
-        🧍‍♂️ {$pasienRajal} pasien — 💳 Rp. {$klaimRajal} (klaim) — 🏥 Rp. {$tarifRajal} (tarif RS)
+        🧍‍♂️ {$dataPasienRJBPJS} pasien — 💳 Rp. {$totalKlaimRJBpjs} (klaim) — 🏥 Rp. {$totalTagihanRJBpjs} (tarif RS)
 
         Rawat Inap:
-        🧍‍♂️ {$pasienRanap} pasien — Rp. {$klaimRanap} (klaim) — 🏥 Rp. {$tarifRanap} (tarif RS)
+        🧍‍♂️ {$dataPasienRIBPJS} pasien — Rp. {$totalKlaimRIBpjs} (klaim) — 🏥 Rp. {$totalTagihanRIBpjs} (tarif RS)
 
         Non-BPJS
 
         Asuransi Lainnya:
-        🧍‍♂️ {$pasienTunai} pasien — 💰 Rp. {$tagihanTunai}
+        🧍‍♂️ {$totalPasienAsuransi} pasien — 💰 Rp. {$totalNominalAsuransi}
 
         Tunai/Umum:
-        🧍‍♂️ {$pasienAsuransi} pasien — 💰 Rp. {$tagihanAsuransi}
+        🧍‍♂️ {$totalPasienTunai} pasien — 💰 Rp. {$totalNominalTunai}
 
         Laporan ini dikirim secara otomatis sebagai bentuk transparansi dan pemantauan kinerja rumah sakit oleh manajemen.
 
@@ -164,5 +197,10 @@ class waPendapatanHarian extends ResourceController
         ]);
     }
 
+    function formatcurrency($floatcurr)
+    {
+        $result = number_format($floatcurr, 2, ',', '.');
+        return $result;
+    }
 
 }
