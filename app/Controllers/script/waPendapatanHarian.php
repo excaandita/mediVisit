@@ -154,7 +154,7 @@ class waPendapatanHarian extends ResourceController
         $totalAllPendapatan = number_format(($result['response']['data']['rawat_inap']['bpjs'][0]['total_klaim'] + $result['response']['data']['rawat_jalan']['bpjs'][0]['total_klaim'] +  ($result['response']['data']['rawat_jalan']['asuransi'][0]['total_nominal'] + $result['response']['data']['rawat_inap']['asuransi'][0]['total_nominal']) + ($result['response']['data']['rawat_jalan']['tunai'][0]['total_nominal'] + $result['response']['data']['rawat_inap']['tunai'][0]['total_nominal'])), 2, ',', '.');
 
         $message = <<<EOD
-        📊 LAPORAN KUNJUNGAN DAN PENDAPATAN HARIAN RS {$this->RS}
+        📊 LAPORAN KUNJUNGAN DAN PENDAPATAN HARIAN {$this->RS}
 
         🗓️ Tanggal : {$startDate}
 
