@@ -52,9 +52,20 @@ class waPendapatanHarian extends ResourceController
     }
 
     public function getDataPendapatanPerHari() : ResponseInterface {
-        $date = date('Y-m-d', strtotime('-1 day'));
+        $dateParam      = $this->request->getVar('date');
+        $dayBeforeParam = $this->request->getVar('day_before') ?? 1;
 
-        $result = $this->fetchDataPendapatanPerHari($date);
+        $date = date('Y-m-d', strtotime('-1 day'));
+        if (isset($dateParam) && $dateParam != '') {
+            $date = date('Y-m-d', strtotime($dateParam));
+        }
+
+        $dayBefore = 1;
+        if (isset($dayBeforeParam) && is_numeric($dayBeforeParam)) {
+            $dayBefore = (int)$dayBeforeParam;
+        }
+
+        $result = $this->fetchDataPendapatanPerHari($date, $dayBefore);
         if ($result['success']) {
             return $this->respond([
                 'metadata' => [
